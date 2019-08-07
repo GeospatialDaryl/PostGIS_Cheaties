@@ -1,0 +1,103 @@
+DROP TABLE planet_osm_line;
+DROP TABLE planet_osm_point;
+DROP TABLE planet_osm_polygon;
+DROP TABLE planet_osm_roads;
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+ALTER TABLE planet_osm_line ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_point ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_polygon ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_roads ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+ALTER TABLE planet_osm_line ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_point ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_polygon ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+ALTER TABLE planet_osm_roads ADD COLUMN OSMUUID2 UUID DEFAULT uuid_generate_v4();
+
+ALTER TABLE table_name
+  RENAME TO new_table_name;
+  ************ALLROADS*************
+ALTER TABLE planet_osm_line 
+  RENAME TO allroads_osm_line;
+ALTER TABLE planet_osm_point 
+  RENAME TO allroads_osm_point;
+ALTER TABLE planet_osm_polygon 
+  RENAME TO allroads_osm_polygon;
+ALTER TABLE planet_osm_roads 
+  RENAME TO allroads_osm_roads;
+  
+  *********WATERWAYS**********
+ALTER TABLE planet_osm_line 
+  RENAME TO waterways_osm_line;
+ALTER TABLE planet_osm_point 
+  RENAME TO waterways_osm_point;
+ALTER TABLE planet_osm_polygon 
+  RENAME TO waterways_osm_polygon;
+ALTER TABLE planet_osm_roads 
+  RENAME TO waterways_osm_roads;
+ 
+   *********NATURAL**********
+ALTER TABLE planet_osm_line 
+  RENAME TO natural_osm_line;
+ALTER TABLE planet_osm_point 
+  RENAME TO natural_osm_point;
+ALTER TABLE planet_osm_polygon 
+  RENAME TO natural_osm_polygon;
+ALTER TABLE planet_osm_roads 
+  RENAME TO natural_osm_roads;
+  
+ogr2ogr -f "FileGDB" /mnt/l/OMS_AFWO_v0.gdb PG:"host=localhost user=posgres dbname=osmdb password=postgres" "allroads_osm_line"
+
+ogr2ogr 
+
+
+   ********    ******************
+
+13
+
+testbed:
+
+create role stack;
+create schema authorization stack;
+set role stack;
+
+create table my_table as 
+select generate_series(0,9) as id, 1 as val1, null::integer as val2;
+
+create table my_table2 as 
+select generate_series(0,9) as id, 1 as val1, null::integer as val2, 3 as val3;
+
+function:
+
+create function has_nonnulls(p_schema in text, p_table in text, p_column in text)
+                returns boolean language plpgsql as $$
+declare 
+  b boolean;
+begin
+  execute 'select exists(select * from '||
+          p_table||' where '||p_column||' is not null)' into b;
+  return b;
+end;$$;
+query:
+
+select table_schema, table_name, column_name, 
+       has_nonnulls(table_schema, table_name, column_name)
+from information_schema.columns
+where table_schema='stack';
+
+http://www.postgresqltutorial.com/postgresql-describe-table/
+
+SELECT
+   COLUMN_NAME
+FROM
+	information_schema.COLUMNS
+WHERE
+	TABLE_NAME = 'geologic_osm_line';
+
+    
+    
